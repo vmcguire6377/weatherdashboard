@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="http://api.openweathermap.org/data/2.5/forecast?q={city name}=f38785180bae51b68a019a1c52c15dd3"></script>
+    
+    <title>Weather Dashboard</title>
+</head>
+<header>
+    <h1>Weather Dashboard</h1>
+</header>
+<body>
+    
+    <h2>Search for a City:</h2>
+    <form>
+        <input type="text" name="text" class="search" placeholder="Search Here">
+        <input type="button" name="submit" class="submit" id="sub_btn" onclick="click()" value="Search">
+        </form>
+        <div class="wrapper">
+            <textarea
+                  readonly
+                  id="desc";
+                  placeholder="Your Current Weather Data";
+                 
+                ></textarea>
+                <div class="info">
+                    <h3>Sunrise: <span class="sunrise"></span></h3>
+                    <h3>Sunset: <span class="sunset"></span></h3>
+                </div>
+              <img src="" alt="" srcset="" id="weather-icon">;
+              <div id="location" class="desc">
+              </div>
+              <div class="weather">
+                  <div class="c"></div>
+                  <div class="circle"></div>
+                  <div class="f"></div>
+              </div>
+              </div>
+              
+              <div class="card-body">
+                
+</body>
+<script src="./assets/js/script.js"></script>
+<body>
+    </html>
