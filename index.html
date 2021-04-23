@@ -1,47 +1,151 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!doctype html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <script src="http://api.openweathermap.org/data/2.5/forecast?q={city name}=f38785180bae51b68a019a1c52c15dd3"></script>
-    
     <title>Weather Dashboard</title>
 </head>
 <header>
     <h1>Weather Dashboard</h1>
 </header>
+
 <body>
-    
+    <!-- Enter city -->
     <h2>Search for a City:</h2>
     <form>
-        <input type="text" name="text" class="search" placeholder="Search Here">
-        <input type="button" name="submit" class="submit" id="sub_btn" onclick="click()" value="Search">
+        <input type="text" id="cityBox" name="city" class="search" placeholder="Search Here">
+        <input type="button" name="submit" class="submit" id="cityBox" onclick="weatherInfo()" value="Search">
         </form>
-        <div class="wrapper">
-            <textarea
-                  readonly
-                  id="desc";
-                  placeholder="Your Current Weather Data";
-                 
-                ></textarea>
-                <div class="info">
-                    <h3>Sunrise: <span class="sunrise"></span></h3>
-                    <h3>Sunset: <span class="sunset"></span></h3>
-                </div>
-              <img src="" alt="" srcset="" id="weather-icon">;
-              <div id="location" class="desc">
-              </div>
-              <div class="weather">
-                  <div class="c"></div>
-                  <div class="circle"></div>
-                  <div class="f"></div>
-              </div>
-              </div>
-              
-              <div class="card-body">
-                
+    
+
+ 
+    
+    <button onclick="weatherInfo()">Submit</button>
+
+    <!-- To display the weather information -->
+    <div id="showWeather">
+        <br><br>City: <span id="cityName" style="color: red;"></span>
+        <br> Current Time: <span id="currentTime" style="color: red;"></span>
+        <br> Temperature: <span id="currentTemp" style="color: red;"></span>
+        <br> Weather Description: <span id="currentWeather" style="color: red;"></span>
+        <br> Humidity: <span id="humidity" style="color: red;"></span>
+        <br> Wind Speed: <span id="windSpeed" style="color: red;"></span>
+        <br> UV Index: <span id="UVIndex" style="color: red;"></span>
+        <br> Sunrise: <span id="sunrise" style="color: red;"></span>
+        <br> Sunset: <span id="sunset" style="color: red;"></span>
+    </div>
+
+    <script lang="text/javascript">
+
+        function weatherInfo() {
+            var cityName = document.getElementById("cityBox").value;
+
+            //If user does not enter a city
+            if (cityName == "") {
+                document.getElementById("cityBox").style.borderColor = "red";
+                alert("Enter a City");
+                return false;
+            }
+            else {
+                document.getElementById("cityBox").style.borderColor = "black";
+            }
+
+            //Enter your OpenWeather Api Key here
+            var apiKey = "f38785180bae51b68a019a1c52c15dd3";
+
+            //To evaluate unit of measure chosen
+            /*var unit_value;
+            if (document.getElementById("r1").checked) {
+                //If user chose id='r1', i.e., Standard
+                unit_value = document.getElementById("r1").value;
+            }
+            else if (document.getElementById("r2").checked) {
+                //If user chose id='r2', i.e., Metric
+                unit_value = document.getElementById("r2").value;
+            }
+            else {
+                //If user chose id='r3', i.e., Imperial
+                unit_value = document.getElementById("r3").value;
+            }*/
+
+            //This will fetch the url which will return a stream of data and then transform it
+            //into json response.
+            //api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+            fetch("http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=f38785180bae51b68a019a1c52c15dd3")
+                .then(function (resp) { return resp.json() }) // Convert to json
+                .then(function (data) {
+
+                    //The entire data will be written in the browser console.
+                    //It can be seen by pressing F12 on keyboard.
+                    console.log(data);
+
+                    //If the user enters an invalid city
+                    if (data.message == "city not found" || data.message == "invalid city") {
+
+                        //Change the border color of cityBox to Red.
+                        document.getElementById("cityBox").style.borderColor = "red";
+
+                        //Show an alert to the user.
+                        alert("Enter a valid city");
+                    }
+                    else {
+                        //Call showWeather to display the required information 
+                        showWeather(data);
+                    }
+
+                })
+                .catch(function () {
+                    // catch any errors
+                });
+
+        }
+
+        //This functions shows the desired information on screen
+        function showWeather(data) {
+
+            //To display city name
+            document.getElementById("cityName").innerHTML = data.name;
+
+            //To display current time
+            document.getElementById("currentTime").innerHTML = calculateTime(data.timezone);
+
+            //To display current temperature. Unit of temperature will be Kelvin, if Standard,
+            //Celsius, if Metric and Farenheit, if Imperial
+            document.getElementById("currentTemp").innerHTML = data.main.temp;
+
+            //To show the weather description
+            document.getElementById("currentWeather").innerHTML = data.weather[0].description;
+
+            //To show humidity
+            document.getElementById("humidity").innerHTML = data.main.humidity;
+        
+        document.getElementById("windSpeed").innerHTML = data.wind.speed;
+        document.getElementById("sunrise").innerHTML = data.sys.sunrise;
+        document.getElementById("sunset").innerHTML = data.sys.sunset;
+        }
+        
+
+        function calculateTime(offset) {
+            //Create Date object
+            //This is for current location
+            var date = new Date();
+
+            //Now we will get local UTC offset and convert it to milliseconds
+            var localOffset = date.getTimezoneOffset() * 60000;
+            
+            //UTC will be local time + local UTC offset
+            var utc = date.getTime() + localOffset;
+
+            //Convert offset in milliseconds and add to utc to get 
+            //current time of that location.
+            var desiredTime = new Date(utc + (1000 * offset));
+
+            //Return time in form of string.
+            return desiredTime.toLocaleString();
+        }
+
+    </script>
 </body>
-<script src="./assets/js/script.js"></script>
-<body>
-    </html>
+
+</html>

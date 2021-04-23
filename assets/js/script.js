@@ -1,4 +1,6 @@
-//var api = "0712f9f68788db84601c6f93f0653d20";
+var apiKey = "0712f9f68788db84601c6f93f0653d20";
+var currentWeather = $("currentWeather");
+var futureWeather = $("#futureWeather");
 var iconImg = document.getElementById("weather-icon");
 var loc = document.querySelector("#location");
 var tempC = document.querySelector(".c");
@@ -7,19 +9,47 @@ var tempF = document.querySelector(".f");
 var sunriseDOM = document.querySelector(".sunrise");
 var sunsetDOM = document.querySelector(".sunset");
 
+var locationArray;
+
+if (localStorage.getItem("localWeatherSearch")) {
+    locationArray = JSON.parse(localStorage.getItem("localWeatherSearch"));
+}else{
+    locationArray = [];
+};
+
+
+function displayCurrentWeather(cityName) {
+let queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=${cityName}&${apiKey}";
+
+$.get(queryUrl).then(function(response) {
+    let currTime = new Date(response.dt*1000);
+    let weatherIcon = "https://openweathermap.org/img/wn/$(response.weather[0].icon}@2px.png";
+
+    currentWeatherDiv.html("
+        <h2>${response.name}, ${response.sys.country} (${currTime.getMonth()+1}/${currTime.getDate()}/${currTime.getFullYear()})<img src = ${"weatherIcon"}</h2>});
+    <p>Temperature: ${response.main.temp} &#176;F</p>
+    <p>Humidity: ${response.main.humidity}%</p>
+    <p>Wind Speed: ${response.wind.speed}m/s</p>
+", returnUVIndex(response.coord))
+createHistoryButton(respons.name);
+    
+})
+};
+
+
 
 //add function to respond to button click, When the search button is clicked,
 //the embedded api should search info for the input city.
-window.addEventListener("click", () => {});
-let long;
-let lat;
+/*</h2 addEventListener("click", () => {});
+//let long;
+//let lat;
 //accessing location of user
 if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
         //storing longitude and latitude in variables
         long = position.coords.longitude;
         lat = position.coords.latitude;
-        var base = "api.openweathermap.org/data/2.5/forecast?q={city name}&0712f9f68788db84601c6f93f0653d20";
+        var base = "https://api.openweathermap.org/data/2.5/weather?q=${city name}&${apiKey}";
         console.log(base);
         //use fetch to retrieve data
         fetch(base).then((response) => {
@@ -63,3 +93,4 @@ sunsetDOM.textContent = "${sunsetGMT.toLocaleDateString()}, ${sunsetGMT.toLocale
 //when the info is captured for the searched city, the current weather data should display
 //in the card body; and the city searched should be saved in local storage and display
 //in a placeholder form under the search area.
+*/
