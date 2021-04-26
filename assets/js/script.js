@@ -1,40 +1,94 @@
-var apiKey = "0712f9f68788db84601c6f93f0653d20";
-var currentWeather = $("currentWeather");
-var futureWeather = $("#futureWeather");
-var iconImg = document.getElementById("weather-icon");
-var loc = document.querySelector("#location");
-var tempC = document.querySelector(".c");
-var tempF = document.querySelector(".f");
-//var desc = documemt.querySelector(".desc");
-var sunriseDOM = document.querySelector(".sunrise");
-var sunsetDOM = document.querySelector(".sunset");
+ // local storage for city
+ var cityName = document.getElementById("cityBox");
 
-var locationArray;
+ cityBtn.addEventListener("click", function () {
+     localStorage.getItem("cityName").innerHTML = localStorage.getItem("cityName");
+     var input = document.getElementById("cityBox").value;
+     localStorage.setItem("cityName", input);
+ });
 
-if (localStorage.getItem("localWeatherSearch")) {
-    locationArray = JSON.parse(localStorage.getItem("localWeatherSearch"));
-}else{
-    locationArray = [];
-};
+ function weatherInfo() {
+     var cityName = document.getElementById("cityBox").value;
+     if (cityName == "") {
+         document.getElementById("cityBox").style.borderColor = "red";
+         return false;
+     }
+     else {
+         document.getElementById("cityBox").style.borderColor = "black";
+     }
+     var apiKey = "f38785180bae51b68a019a1c52c15dd3";
 
+     fetch("http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial" + "&appid=f38785180bae51b68a019a1c52c15dd3")
+         .then(function (resp) { return resp.json() })
+         .then(function (data) {
+             console.log(data);
+             if (data.message == "city not found" || data.message == "invalid city") {
+                 document.getElementById("cityBox").style.borderColor = "red";
+             }
+             else {
+                 //Call showWeather to display the required information 
+                 showWeather(data);
+             }
+             weatherForecast(cityName);
+         });
 
-function displayCurrentWeather(cityName) {
-let queryUrl = "https://api.openweathermap.org/data/2.5/weather?q=${cityName}&${apiKey}";
+ };
 
-$.get(queryUrl).then(function(response) {
-    let currTime = new Date(response.dt*1000);
-    let weatherIcon = "https://openweathermap.org/img/wn/$(response.weather[0].icon}@2px.png";
+     function weatherForecast(cityName) {
+     fetch("http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial" + "&appid=f38785180bae51b68a019a1c52c15dd3")
+         .then(function (resp) { return resp.json() }) // Convert to json
+         .then(function (data) {
+             console.log(data);
+             showForecast(data);
 
-    currentWeatherDiv.html("
-        <h2>${response.name}, ${response.sys.country} (${currTime.getMonth()+1}/${currTime.getDate()}/${currTime.getFullYear()})<img src = ${"weatherIcon"}</h2>});
-    <p>Temperature: ${response.main.temp} &#176;F</p>
-    <p>Humidity: ${response.main.humidity}%</p>
-    <p>Wind Speed: ${response.wind.speed}m/s</p>
-", returnUVIndex(response.coord))
-createHistoryButton(respons.name);
+         });
+ }
+ function diplayUVIndex() {
+     fetch("https://api.openweathermap.org/data/2.5/uvi?" + "&coordinates.lat" + "&coordinates.lon" + "&appid=f38785180bae51b68a019a1c52c15dd3")
+     document.getElementById("UVIndex").innerHTML = data.coord.lat + data.coord.lon;
     
-})
-};
+ };
+ //To display current weather data
+ function showWeather(data) {
+     document.getElementById("cityName").innerHTML = data.name;
+     document.getElementById("currentTime").innerHTML = calculateTime(data.timezone);
+     document.getElementById("currentTemp").innerHTML = data.main.temp + " degrees F";
+     document.getElementById("currentWeather").innerHTML = data.weather[0].description;
+     document.getElementById("humidity").innerHTML = data.main.humidity + " %";
+     document.getElementById("windSpeed").innerHTML = data.wind.speed + " mph";
+     document.getElementById("UVIndex").innerHTML = data.coord.lat + data.coord.lon;
+     document.getElementById("sunrise").innerHTML = calculateTime(data.sys.sunrise);
+     document.getElementById("sunset").innerHTML = calculateTime(data.sys.sunset);
+     //displayUVIndex();
+ };
+ //To display 5 day forecast
+ function showForecast(data) {
+     document.getElementById("dayOne").innerHTML =  document.getElementById("currentTemp").innerHTML = data.list[0].main.temp + " degrees F, " + 
+     data.list[0].wind.speed + " mph, " + data.list[0].weather[0].description;
+     document.getElementById("currentTemp").innerHTML = data.list[0].main.temp;
+     document.getElementById("currentWeather").innterHTML = data.list[0].weather[0].description;
+     document.getElementById("windSpeed").innterHTML = data.list[0].wind.speed;
+ };
+
+function showDay2(data) {
+    document.getElementById("dayTwo").innerHTML =  document.getElementById("currentTemp").innerHTML = data.list[8].main.temp + " degrees F , " + 
+    data.list[8].wind.speed + " mph , " + data.list[8].weather[0].description;
+    document.getElementById("currentTemp").innerHTML = data.list[0].main.temp;
+     document.getElementById("currentWeather").innterHTML = data.list[0].weather[0].description;
+     document.getElementById("windSpeed").innterHTML = data.list[0].wind.speed;
+ };
+
+
+ function calculateTime(offset) {
+     //This is for current location
+     var date = new Date();
+     var localOffset = date.getTimezoneOffset() * 60000;
+     var utc = date.getTime() + localOffset;
+     var desiredTime = new Date(utc + (1000 * offset));
+     //Return time in form of string
+     return desiredTime.toLocaleString();
+ };
+
 
 
 

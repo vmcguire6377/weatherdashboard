@@ -18,13 +18,28 @@ h1 {
 .submit:hover {
     background-color: blue;
 }
+.showForecast {
+    color:rgb(23, 192, 248);
+}
+.li {
+    background-color: lightgrey;
+      border: 15px solid blue;
+      padding: 50px;
+display: inline-block;
+width: 70%;
+height: 300px;
+text-align: center;
+font-size: larger;
+margin-left: 200px;
+margin-top: -120px;
+    }
+    .container {
+        margin-top: 15px;
+    }
 
-textarea {
-    display: inline-block;
-    width: 80%;
-    height: 300px;
-    text-align: center;
-    font-size: larger;
-    margin-left: 200px;
-    margin-top: -120px;
+ h3 {
+    font-size: 20px;
+    font-weight: heavy;
+    margin-top: 5px;
+    margin-bottom: -5px;
 }

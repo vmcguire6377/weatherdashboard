@@ -13,118 +13,57 @@
 <body>
     <!-- Enter city -->
     <h2>Search for a City:</h2>
-    <form>
+    <button>
         <input type="text" id="cityBox" name="city" class="search" placeholder="Search Here">
-        <input type="button" name="submit" class="submit" id="cityBox" onclick="weatherInfo()" value="Search">
-        </form>
+        <input type="button" name="submit" class="submit" id="cityBtn" onclick="weatherInfo()" value="search"></button>
+       
+        
+    </button>
 
-    <!-- To display the weather information -->
-    <div id="showWeather">
-        <br><br>City: <span id="cityName" style="color: red;"></span>
-        <br> Current Time: <span id="currentTime" style="color: red;"></span>
-        <br> Temperature: <span id="currentTemp" style="color: red;"></span>
-        <br> Weather Description: <span id="currentWeather" style="color: red;"></span>
-        <br> Humidity: <span id="humidity" style="color: red;"></span>
-        <br> Wind Speed: <span id="windSpeed" style="color: red;"></span>
-        <br> UV Index: <span id="UVIndex" style="color: red;"></span>
-        <br> Sunrise: <span id="sunrise" style="color: red;"></span>
-        <br> Sunset: <span id="sunset" style="color: red;"></span>
+
+    <style>
+        div {
+            text-align: wrap;
+            background-color: lightgrey;
+            border: 15px solid blue;
+            padding: 50px;
+            display: inline-block;
+            width: 70%;
+            height: 200px;
+            text-align: center;
+            font-size: larger;
+            margin-left: 200px;
+            margin-top: -120px;
+            font-weight: heavy;
+            font-size: 28px;
+        }
+    </style>
+    <div id="showWeather" type="container"
+            <h2>City: </h2><text id="cityName" style="color: black; font-size: 28px; display: inline-flex;"></text>
+        <h3> Current Time: <text id="currentTime" style="color: blue; font-size: 18px;display: inline-flex"></text>
+            Temperature: <text id="currentTemp" ; style="color: blue; font-size: 18px;"></text>
+            Weather Description: <text id="currentWeather" style="color: blue; font-size: 18px;"></text>
+            Humidity: <text id="humidity" style="color: blue; font-size: 18px;;"></text>
+            Wind Speed: <text id="windSpeed" style="color: blue; font-size: 18px;"></text>
+            UV Index: <text id="UVIndex" style="color: blue; font-size: 18px;"></text>
+            Sunrise: <text id="sunrise" style="color: blue; font-size: 18px;"></text>
+            Sunset: <text id="sunset" style="color: blue; font-size: 18px;"></text>
+        </h3>
+       
     </div>
-
-    <script lang="text/javascript">
-
-        function weatherInfo() {
-            var cityName = document.getElementById("cityBox").value;
-
-            //If user does not enter a city
-            if (cityName == "") {
-                document.getElementById("cityBox").style.borderColor = "red";
-                alert("Enter a City");
-                return false;
-            }
-            else {
-                document.getElementById("cityBox").style.borderColor = "black";
-            }
-            var apiKey = "f38785180bae51b68a019a1c52c15dd3";
-            
-            fetch("http://api.openweathermap.org/data/2.5/weather?q=" + cityName +"&units=imperial" + "&appid=f38785180bae51b68a019a1c52c15dd3")
-                .then(function (resp) {return resp.json() }) 
-                .then(function (data) {
-                    console.log(data);
-                    if (data.message == "city not found" || data.message == "invalid city") {
-                        document.getElementById("cityBox").style.borderColor = "red";
-                    }
-                    else {
-                        //Call showWeather to display the required information 
-                        showWeather(data);
-                    }
-
-                })
-                .catch(function () {
-                    // catch any errors
-                });
-
-        }
-
- function weatherForecast() {
-            var cityName = document.getElementById("cityBox").value;
-            if (cityName == "") {
-                document.getElementById("cityBox").style.borderColor = "red";
-                return false;
-            }
-            else {
-                document.getElementById("cityBox").style.borderColor = "black";
-            }
-            var apiKey = "f38785180bae51b68a019a1c52c15dd3";
-            
-            fetch("http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=f38785180bae51b68a019a1c52c15dd3")
-                .then(function (resp) { return resp.json() }) // Convert to json
-                .then(function (data) {
-                    console.log(data);
-
-                    //If the user enters an invalid city
-                    if (data.message == "city not found" || data.message == "invalid city") {
-
-                        //Change the border color of cityBox to Red.
-                        document.getElementById("cityBox").style.borderColor = "red";
-                    }
-                    else {
-                        //Call showWeather to display the required information 
-                        weatherForecast(data);
-                    }
-
-                })
-                .catch(function () {
-                    // catch any errors
-                });
-
-        }
-        //To display current weather data
-        function showWeather(data) {
-           
-            document.getElementById("cityName").innerHTML = data.name;
-            document.getElementById("currentTime").innerHTML = calculateTime(data.timezone);
-            document.getElementById("currentTemp").innerHTML = data.main.temp;
-            document.getElementById("currentWeather").innerHTML = data.weather[0].description;
-            document.getElementById("humidity").innerHTML = data.main.humidity;
-            document.getElementById("windSpeed").innerHTML = data.wind.speed;
-            document.getElementById("UVIndex").innerHTML = data.coord.lat;
-            document.getElementById("sunrise").innerHTML = data.sys.sunrise;
-            document.getElementById("sunset").innerHTML = data.sys.sunset;
-            calculateTime();
-        }
-
-        function calculateTime(offset) {
-            //This is for current location
-            var date = new Date();
-            var localOffset = date.getTimezoneOffset() * 60000;
-            var utc = date.getTime() + localOffset;
-            var desiredTime = new Date(utc + (1000 * offset));
-            //Return time in form of string
-            return desiredTime.toLocaleString();
-        }
-
-    </script>
+    
+    <div id="showForecast">
+        <h2>5 Day Forecast: </h2><text id="showForecast" style="color: black; font-size: 28p x; display: inline-flex;"></text>
+        <h3> Day One <text id="dayOne" style="color: blue; font-size: 18px;"></text>
+            <h3> Date:</h3><text id="date"></text>
+        <h3 id="showDayTwo">Day Two <text id="showDayTwo" style="color: blue; font-size: 18px;"></text>
+         Day Three <text id="dayThree" style="color: blue; font-size: 18px;"></text>
+         Day Four <text id="dayFour" style="color: blue; font-size: 18px;"></text>
+         Day Five <text id="dayFive" style="color: blue; font-size: 18px;"></text>
+        </h3>
+    </div>
+    <script src="./assets/js/script.js"></script>
+      
 </body>
 
 </html>
