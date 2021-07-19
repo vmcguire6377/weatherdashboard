@@ -1,0 +1,45 @@
+h1 {
+    background-color: blue;
+    text-align: center;
+    color: white;
+    
+}
+.search {
+  
+}
+.submit {
+    background-color: rgb(23, 192, 248);
+    color: white;
+    display: flex;
+    width: 165px;
+    margin-top: 15px;
+}
+
+.submit:hover {
+    background-color: blue;
+}
+.showForecast {
+    color:rgb(23, 192, 248);
+}
+.li {
+    background-color: lightgrey;
+      border: 15px solid blue;
+      padding: 50px;
+display: inline-block;
+width: 70%;
+height: 300px;
+text-align: center;
+font-size: larger;
+margin-left: 200px;
+margin-top: -120px;
+    }
+    .container {
+        margin-top: 15px;
+    }
+
+ h3 {
+    font-size: 20px;
+    font-weight: heavy;
+    margin-top: 5px;
+    margin-bottom: -5px;
+}
