@@ -1,45 +1,64 @@
+.searchColumn {
+    background-color: rgb(252, 243, 243);
+}
+
 h1 {
     background-color: blue;
     text-align: center;
-    color: white;
-    
 }
-.search {
-  
-}
-.submit {
-    background-color: rgb(23, 192, 248);
-    color: white;
-    display: flex;
-    width: 165px;
-    margin-top: 15px;
+h2, h3 {
+    padding-top: 15px;
+    font-weight: 500;
 }
 
-.submit:hover {
+h4 {
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.bg-primary, .input-group {
+    margin-bottom: 10px;
+}
+
+.btn-group-vertical {
+    width: 100%;
+    display: inline-block;
     background-color: blue;
 }
-.showForecast {
-    color:rgb(23, 192, 248);
-}
-.li {
-    background-color: lightgrey;
-      border: 15px solid blue;
-      padding: 50px;
-display: inline-block;
-width: 70%;
-height: 300px;
-text-align: center;
-font-size: larger;
-margin-left: 200px;
-margin-top: -120px;
-    }
-    .container {
-        margin-top: 15px;
-    }
 
- h3 {
-    font-size: 20px;
-    font-weight: heavy;
-    margin-top: 5px;
-    margin-bottom: -5px;
+.btn-light {
+    text-align: left;
+}
+
+.uvPadding {
+    padding: 15px;
+    border-radius: 0.5rem;
+}
+
+.card-body {
+    padding: 0.85rem;
+    padding-bottom: 0;
+    background-color: blue;
+}
+
+#currentWeather {
+    border: solid 3px rgba(0,0,0,.125);
+    border-radius: 0.5rem;
+    margin: 15px 0 15px 0;
+    padding: 15px;
+}
+
+#previousSearch {
+    margin-bottom: 15px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+@media (max-width:768px) {
+    #previousSearch {
+        max-height: 152px;
+    }
 }
