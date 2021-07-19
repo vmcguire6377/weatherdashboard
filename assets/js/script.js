@@ -1,95 +1,124 @@
- // local storage for city
- var cityName = document.getElementById("cityBox");
+ const apiKey = "f38785180bae51b68a019a1c52c15dd3";
+var currWeatherDiv = $("#currentWeather");
+var forecastDiv = $("#weatherForecast");
+var citiesArray;
 
- cityBtn.addEventListener("click", function () {
-     localStorage.getItem("cityName").innerHTML = localStorage.getItem("cityName");
-     var input = document.getElementById("cityBox").value;
-     localStorage.setItem("cityName", input);
- });
+if (localStorage.getItem("localWeatherSearches")) {
+    citiesArray = JSON.parse(localStorage.getItem("localWeatherSearches"));
+    writeSearchHistory(citiesArray);
+} else {
+    citiesArray = [];
+};
 
- function weatherInfo() {
-     var cityName = document.getElementById("cityBox").value;
-     if (cityName == "") {
-         document.getElementById("cityBox").style.borderColor = "red";
-         return false;
-     }
-     else {
-         document.getElementById("cityBox").style.borderColor = "black";
-     }
-     var apiKey = "f38785180bae51b68a019a1c52c15dd3";
 
-     fetch("https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial" + "&appid=f38785180bae51b68a019a1c52c15dd3")
-         .then(function (resp) { return resp.json() })
-         .then(function (data) {
-             console.log(data);
-             if (data.message == "city not found" || data.message == "invalid city") {
-                 document.getElementById("cityBox").style.borderColor = "red";
-             }
-             else {
-                 //Call showWeather to display the required information 
-                 showWeather(data);
-             }
-             weatherForecast(cityName);
-         });
+function returnCurrentWeather(cityName) {
+    let queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&APPID=${apiKey}`;
 
- };
+    $.get(queryURL).then(function(response){
+        let currTime = new Date(response.dt*1000);
+        let weatherIcon = `https://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png`;
 
-     function weatherForecast(cityName) {
-     fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial" + "&appid=f38785180bae51b68a019a1c52c15dd3")
-         .then(function (resp) { return resp.json() }) // Convert to json
-         .then(function (data) {
-             console.log(data);
-             showForecast(data);
+        currWeatherDiv.html(`
+        <h2>${response.name}, ${response.sys.country} (${currTime.getMonth()+1}/${currTime.getDate()}/${currTime.getFullYear()})<img src=${weatherIcon} height="70px"></h2>
+        <p>Temperature: ${response.main.temp} &#176;F</p>
+        <p>Humidity: ${response.main.humidity}%</p>
+        <p>Wind Speed: ${response.wind.speed} m/s</p>
+        `, returnUVIndex(response.coord))
+        createHistoryButton(response.name);
+    })
+};
 
-         });
- }
- function diplayUVIndex() {
-     fetch("https://api.openweathermap.org/data/2.5/uvi?" + "&coordinates.lat" + "&coordinates.lon" + "&appid=f38785180bae51b68a019a1c52c15dd3")
-     document.getElementById("UVIndex").innerHTML = data.coord.lat + data.coord.lon;
+function returnWeatherForecast(cityName) {
+    let queryURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=imperial&APPID=${apiKey}`;
+
+    $.get(queryURL).then(function(response){
+        let forecastInfo = response.list;
+        forecastDiv.empty();
+        $.each(forecastInfo, function(i) {
+            if (!forecastInfo[i].dt_txt.includes("12:00:00")) {
+                return;
+            }
+            let forecastDate = new Date(forecastInfo[i].dt*1000);
+            let weatherIcon = `https://openweathermap.org/img/wn/${forecastInfo[i].weather[0].icon}.png`;
+
+            forecastDiv.append(`
+            <div class="col-md">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h4>${forecastDate.getMonth()+1}/${forecastDate.getDate()}/${forecastDate.getFullYear()}</h4>
+                        <img src=${weatherIcon} alt="Icon">
+                        <p>Temp: ${forecastInfo[i].main.temp} &#176;F</p>
+                        <p>Humidity: ${forecastInfo[i].main.humidity}%</p>
+                    </div>
+                </div>
+            </div>
+            `)
+        })
+    })
+};
+
+function returnUVIndex(coordinates) {
+    let queryURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${coordinates.lat}&lon=${coordinates.lon}&APPID=${apiKey}`;
+
+    $.get(queryURL).then(function(response){
+        let currUVIndex = response.value;
+        let uvSeverity = "pink";
+        let textColour = "white"
+      
+        if (currUVIndex >= 11) {
+            uvSeverity = "red";
+        } else if (currUVIndex >= 8) {
+            uvSeverity = "red";
+        } else if (currUVIndex >= 6) {
+            uvSeverity = "green";
+            textColour = "black"
+        } else if (currUVIndex >= 3) {
+            uvSeverity = "orange";
+            textColour = "black"
+        }
+        currWeatherDiv.append(`<p>UV Index: <span class="text-${textColour} uvPadding" style="background-color: ${uvSeverity};">${currUVIndex}</span></p>`);
+    })
+}
+
+function createHistoryButton(cityName) {
+    var citySearch = cityName.trim();
+    var buttonCheck = $(`#previousSearch > BUTTON[value='${citySearch}']`);
+    if (buttonCheck.length == 1) {
+      return;
+    }
     
- };
- //To display current weather data
- function showWeather(data) {
-     document.getElementById("cityName").innerHTML = data.name;
-     document.getElementById("currentTime").innerHTML = calculateTime(data.timezone);
-     document.getElementById("currentTemp").innerHTML = data.main.temp + " degrees F";
-     document.getElementById("currentWeather").innerHTML = data.weather[0].description;
-     document.getElementById("humidity").innerHTML = data.main.humidity + " %";
-     document.getElementById("windSpeed").innerHTML = data.wind.speed + " mph";
-     document.getElementById("UVIndex").innerHTML = data.coord.lat + data.coord.lon;
-     document.getElementById("sunrise").innerHTML = calculateTime(data.sys.sunrise);
-     document.getElementById("sunset").innerHTML = calculateTime(data.sys.sunset);
-     //displayUVIndex();
- };
- //To display 5 day forecast
- function showForecast(data) {
-     document.getElementById("dayOne").innerHTML =  document.getElementById("currentTemp").innerHTML = data.list[0].main.temp + " degrees F, " + 
-     data.list[0].wind.speed + " mph, " + data.list[0].weather[0].description;
-     document.getElementById("currentTemp").innerHTML = data.list[0].main.temp;
-     document.getElementById("currentWeather").innterHTML = data.list[0].weather[0].description;
-     document.getElementById("windSpeed").innterHTML = data.list[0].wind.speed;
- };
+    if (!citiesArray.includes(cityName)){
+        citiesArray.push(cityName);
+        localStorage.setItem("localWeatherSearches", JSON.stringify(citiesArray));
+    }
 
-function showDay2(data) {
-    document.getElementById("dayTwo").innerHTML =  document.getElementById("currentTemp").innerHTML = data.list[8].main.temp + " degrees F , " + 
-    data.list[8].wind.speed + " mph , " + data.list[8].weather[0].description;
-    document.getElementById("currentTemp").innerHTML = data.list[0].main.temp;
-     document.getElementById("currentWeather").innterHTML = data.list[0].weather[0].description;
-     document.getElementById("windSpeed").innterHTML = data.list[0].wind.speed;
- };
+    $("#previousSearch").prepend(`
+    <button class="btn btn-light cityHistoryBtn" value='${cityName}'>${cityName}</button>
+    `);
+}
+
+function writeSearchHistory(array) {
+    $.each(array, function(i) {
+        createHistoryButton(array[i]);
+    })
+}
 
 
- function calculateTime(offset) {
-     //This is for current location
-     var date = new Date();
-     var localOffset = date.getTimezoneOffset() * 60000;
-     var utc = date.getTime() + localOffset;
-     var desiredTime = new Date(utc + (1000 * offset));
-     //Return time in form of string
-     return desiredTime.toLocaleString();
- };
+returnCurrentWeather("Missoula");
+returnWeatherForecast("Missoula");
 
-    
+$("#submitCity").click(function() {
+    event.preventDefault();
+    let cityName = $("#cityInput").val();
+    returnCurrentWeather(cityName);
+    returnWeatherForecast(cityName);
+});
+
+$("#previousSearch").click(function() {
+    let cityName = event.target.value;
+    returnCurrentWeather(cityName);
+    returnWeatherForecast(cityName);
+});
 
 
 
