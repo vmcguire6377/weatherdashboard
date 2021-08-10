@@ -12,7 +12,7 @@ if (localStorage.getItem("localWeatherSearches")) {
 
 
 function returnCurrentWeather(cityName) {
-    let queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&APPID=${apiKey}`;
+    let queryURL = `http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${cityName}&units=imperial&APPID=${apiKey}`;
 
     $.get(queryURL).then(function(response){
         let currTime = new Date(response.dt*1000);
