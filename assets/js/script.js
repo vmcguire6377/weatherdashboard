@@ -1,4 +1,4 @@
- const apiKey = "f38785180bae51b68a019a1c52c15dd3";
+const apiKey = "d857675ceeb856e1740d33638dd8b4e4";
 var currWeatherDiv = $("#currentWeather");
 var forecastDiv = $("#weatherForecast");
 var citiesArray;
@@ -118,12 +118,7 @@ $("#previousSearch").click(function() {
     let cityName = event.target.value;
     returnCurrentWeather(cityName);
     returnWeatherForecast(cityName);
-});
-
-
-
-
-
+})
 
 
 
